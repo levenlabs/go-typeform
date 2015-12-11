@@ -1,9 +1,9 @@
 package fields
 
 import (
-	. "testing"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/validator.v2"
+	. "testing"
 )
 
 func TestURL(t *T) {

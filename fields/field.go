@@ -6,11 +6,14 @@ package fields
 
 // Field is a generic Field that holds common properties of all Fields in a Form
 type Field struct {
-	Type        FieldType    `json:"type"                  bson:"t"`
-	Question    string       `json:"question"              bson:"q"              validate:"nonzero,max=512"`
-	Ref         string       `json:"ref,omitempty"         bson:"ref,omitempty"  validate:"max=128"`
-	Description string       `json:"description,omitempty" bson:"d"              validate:"max=512"`
-	Required    bool         `json:"required,omitempty"    bson:"r,omitempty"`
+	Type        FieldType `json:"type"                  bson:"t"`
+	Question    string    `json:"question"              bson:"q"              validate:"nonzero,max=512"`
+	Ref         string    `json:"ref,omitempty"         bson:"ref,omitempty"  validate:"max=128"`
+	Description string    `json:"description,omitempty" bson:"d"              validate:"max=512"`
+	Required    bool      `json:"required,omitempty"    bson:"r,omitempty"`
+
+	// Value is only included so you can pair up a user's answer with the original field
+	Value interface{} `json:"value,omitempty"       bson:"-"`
 }
 
 // OpinionLabels represents a OpinionScale's labels property
@@ -23,11 +26,11 @@ type OpinionLabels struct {
 
 // OpinionScale is a scale from 0-(steps - 1)
 type OpinionScale struct {
-	Field                                                  `bson:",inline"`
-	Steps      int64         `json:"steps"                  bson:"s"             validate:"min=5,max=11"`
-	StartAtOne bool          `json:"start_at_one,omitempty" bson:"sao,omitempty"`
+	Field      `bson:",inline"`
+	Steps      int64 `json:"steps"                  bson:"s"             validate:"min=5,max=11"`
+	StartAtOne bool  `json:"start_at_one,omitempty" bson:"sao,omitempty"`
 	// todo: figure out how to validate if completely empty (once https://github.com/go-validator/validator/pull/38)
-	Labels     OpinionLabels `json:"labels,omitempty"       bson:"l,omitempty"`
+	Labels OpinionLabels `json:"labels,omitempty"       bson:"l,omitempty"`
 }
 
 // MultipleChoiceChoice is a choice in a MultipleChoice's Choices slice
@@ -37,29 +40,28 @@ type MultipleChoiceChoice struct {
 
 // MultipleChoice is a question that contains multiple choices
 type MultipleChoice struct {
-	Field                                                  `bson:",inline"`
+	Field   `bson:",inline"`
 	Choices []MultipleChoiceChoice `json:"choices"          bson:"c"             validate:"min=1,max=25"`
 }
 
 // Statement is just text, no question to answer
 type Statement struct {
-	Field                                                  `bson:",inline"`
+	Field `bson:",inline"`
 }
 
 // FieldType describes the type of field
 type FieldType string
 
 var (
-	TypeStatement FieldType = "statement"
-	TypeOpinionScale FieldType = "opinion_scale"
+	TypeStatement      FieldType = "statement"
+	TypeOpinionScale   FieldType = "opinion_scale"
 	TypeMultipleChoice FieldType = "multiple_choice"
 )
 
 // emptyInterface can be used to get an empty specific struct for the type of
 // field that the field is. This is used by the Form to unmarshal
-func (q *Field) emptyInterface() interface{} {
-	var dst interface{}
-	switch q.Type {
+func (f *Field) emptyInterface() (dst FieldInterface) {
+	switch f.Type {
 	case TypeStatement:
 		dst = &Statement{}
 	case TypeOpinionScale:
@@ -67,7 +69,44 @@ func (q *Field) emptyInterface() interface{} {
 	case TypeMultipleChoice:
 		dst = &MultipleChoice{}
 	default:
-		dst = q
+		dst = f
 	}
-	return dst
+	return
+}
+
+// FieldInterface can be used to get common properties off of the various types
+// of Field's on a Form
+type FieldInterface interface {
+	GetType() FieldType
+	GetQuestion() string
+	GetRef() string
+	GetDescription() string
+	GetRequired() bool
+	GetValue() interface{}
+	SetValue(v interface{})
+}
+
+/*
+	Various methods for getting common fields off of a Field
+*/
+func (f *Field) GetType() FieldType {
+	return f.Type
+}
+func (f *Field) GetQuestion() string {
+	return f.Question
+}
+func (f *Field) GetRef() string {
+	return f.Ref
+}
+func (f *Field) GetDescription() string {
+	return f.Description
+}
+func (f *Field) GetRequired() bool {
+	return f.Required
+}
+func (f *Field) GetValue() interface{} {
+	return f.Value
+}
+func (f *Field) SetValue(v interface{}) {
+	f.Value = v
 }

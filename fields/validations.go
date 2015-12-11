@@ -1,12 +1,11 @@
 package fields
 
 import (
+	"errors"
 	"github.com/levenlabs/golib/rpcutil"
 	"gopkg.in/validator.v2"
 	"net/url"
-	"errors"
 )
-
 
 func init() {
 	rpcutil.InstallCustomValidators()

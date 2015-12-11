@@ -7,28 +7,28 @@ import (
 
 // FormMetadata represents everything about a Form except for the Fields
 type FormMetadata struct {
-	Title      string         `json:"title"                        bson:"t"           validate:"min=1,max=256"`
-	Tags       []string       `json:"tags,omitempty"               bson:"g,omitempty" validate:"arrMap=min=1,arrMap=max=128,max=100"`
-	WebhookURL string         `json:"webhook_submit_url,omitempty" bson:"w,omitempty" validate:"validateURL"`
+	Title      string   `json:"title"                        bson:"t"           validate:"min=1,max=256"`
+	Tags       []string `json:"tags,omitempty"               bson:"g,omitempty" validate:"arrMap=min=1,arrMap=max=128,max=100"`
+	WebhookURL string   `json:"webhook_submit_url,omitempty" bson:"w,omitempty" validate:"validateURL"`
 }
 
 // A Form is a group of Fields that can be submitted to TypeForm's [/forms](http://docs.typeform.io/docs/forms)
 // endpoint
 type Form struct {
-	FormMetadata                                                  `bson:",inline"`
-	Fields     []interface{}  `json:"fields"                       bson:"f"           validate:"min=1,max=500"`
+	FormMetadata `bson:",inline"`
+	Fields       []FieldInterface `json:"fields"                    bson:"f"           validate:"min=1,max=500"`
 }
 
 // jsonForm is used to Unmarshal into since it has Fields of json.RawMessage
 type jsonForm struct {
 	FormMetadata
-	Fields []json.RawMessage  `json:"fields"                       bson:"f"`
+	Fields []json.RawMessage `json:"fields"                       bson:"f"`
 }
 
 // bsonForm is used to Unmarshal into since it has Fields of bson.Raw
 type bsonForm struct {
 	FormMetadata
-	Fields []bson.Raw         `json:"fields"                       bson:"f"`
+	Fields []bson.Raw `json:"fields"                       bson:"f"`
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
@@ -40,8 +40,8 @@ func (f *Form) UnmarshalJSON(b []byte) error {
 	f.FormMetadata = jf.FormMetadata
 
 	var err error
-	var dst interface{}
-	f.Fields = make([]interface{}, len(jf.Fields))
+	var dst FieldInterface
+	f.Fields = make([]FieldInterface, len(jf.Fields))
 	for i, qstr := range jf.Fields {
 		q := &Field{}
 		if err = json.Unmarshal(qstr, q); err != nil {
@@ -65,8 +65,8 @@ func (f *Form) SetBSON(raw bson.Raw) error {
 	f.FormMetadata = bf.FormMetadata
 
 	var err error
-	var dst interface{}
-	f.Fields = make([]interface{}, len(bf.Fields))
+	var dst FieldInterface
+	f.Fields = make([]FieldInterface, len(bf.Fields))
 	for i, qstr := range bf.Fields {
 		q := &Field{}
 		if err = qstr.Unmarshal(q); err != nil {
@@ -80,4 +80,3 @@ func (f *Form) SetBSON(raw bson.Raw) error {
 	}
 	return err
 }
-

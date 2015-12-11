@@ -1,16 +1,16 @@
 package fields
 
 import (
-	. "testing"
-	"github.com/stretchr/testify/assert"
 	"encoding/json"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/mgo.v2/bson"
+	. "testing"
 )
 
 func TestJSONStatement(t *T) {
 	f := &Form{
-		Fields: []interface{}{
+		Fields: []FieldInterface{
 			&Statement{
 				Field: Field{
 					Type: TypeStatement,
@@ -32,18 +32,18 @@ func TestJSONStatement(t *T) {
 func TestBSONStatement(t *T) {
 	s := &Statement{
 		Field: Field{
-			Type: TypeStatement,
+			Type:     TypeStatement,
 			Question: "Hey?",
 		},
 	}
 	f := &Form{
-		Fields: []interface{}{s},
+		Fields: []FieldInterface{s},
 	}
-	fexp := struct{
-		Title string `bson:"t"`
+	fexp := struct {
+		Title  string       `bson:"t"`
 		Fields []*Statement `bson:"f"`
 	}{
-		Title: "",
+		Title:  "",
 		Fields: []*Statement{s},
 	}
 	j, err := bson.Marshal(f)
@@ -60,7 +60,7 @@ func TestBSONStatement(t *T) {
 
 func TestJSONMultipleChoice(t *T) {
 	f := &Form{
-		Fields: []interface{}{
+		Fields: []FieldInterface{
 			&MultipleChoice{
 				Field: Field{
 					Type: TypeMultipleChoice,
@@ -96,13 +96,13 @@ func TestBSONMultipleChoice(t *T) {
 		},
 	}
 	f := &Form{
-		Fields: []interface{}{mc},
+		Fields: []FieldInterface{mc},
 	}
 	fexp := struct {
-		Title  string `bson:"t"`
+		Title  string            `bson:"t"`
 		Fields []*MultipleChoice `bson:"f"`
 	}{
-		Title: "",
+		Title:  "",
 		Fields: []*MultipleChoice{mc},
 	}
 	j, err := bson.Marshal(f)
@@ -119,17 +119,17 @@ func TestBSONMultipleChoice(t *T) {
 
 func TestJSONOpinionLabels(t *T) {
 	f := &Form{
-		Fields: []interface{}{
+		Fields: []FieldInterface{
 			&OpinionScale{
 				Field: Field{
 					Type: TypeOpinionScale,
 				},
-				Steps: 5,
+				Steps:      5,
 				StartAtOne: true,
 				Labels: OpinionLabels{
-					Left: "l",
+					Left:   "l",
 					Center: "c",
-					Right: "r",
+					Right:  "r",
 				},
 			},
 		},
@@ -150,22 +150,22 @@ func TestBSONOpinionLabels(t *T) {
 		Field: Field{
 			Type: TypeOpinionScale,
 		},
-		Steps: 5,
+		Steps:      5,
 		StartAtOne: true,
 		Labels: OpinionLabels{
-			Left: "l",
+			Left:   "l",
 			Center: "c",
-			Right: "r",
+			Right:  "r",
 		},
 	}
 	f := &Form{
-		Fields: []interface{}{os},
+		Fields: []FieldInterface{os},
 	}
 	fexp := struct {
-		Title  string `bson:"t"`
+		Title  string          `bson:"t"`
 		Fields []*OpinionScale `bson:"f"`
 	}{
-		Title: "",
+		Title:  "",
 		Fields: []*OpinionScale{os},
 	}
 	j, err := bson.Marshal(f)
