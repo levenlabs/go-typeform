@@ -106,12 +106,14 @@ func TestFieldInterface(t *T) {
 	_, ok = os.(FieldInterface)
 	assert.True(t, ok)
 
+	tags := []string{"tag"}
 	f := &Field{
 		Type:        TypeStatement,
 		Question:    "Hey?",
 		Ref:         "hey",
 		Description: "This is a test",
 		Required:    true,
+		Tags:        tags,
 	}
 	fi, ok := interface{}(f).(FieldInterface)
 	require.True(t, ok)
@@ -121,6 +123,7 @@ func TestFieldInterface(t *T) {
 	assert.Equal(t, "hey", fi.GetRef())
 	assert.Equal(t, "This is a test", fi.GetDescription())
 	assert.Equal(t, true, fi.GetRequired())
+	assert.Equal(t, tags, f.GetTags())
 	fi.SetValue("val")
 	assert.Equal(t, "val", f.Value)
 	assert.Equal(t, "val", f.GetValue())

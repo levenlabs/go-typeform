@@ -16,19 +16,19 @@ type FormMetadata struct {
 // endpoint
 type Form struct {
 	FormMetadata `bson:",inline"`
-	Fields       []FieldInterface `json:"fields"                    bson:"f"           validate:"min=1,max=500"`
+	Fields       []FieldInterface `json:"fields"             bson:"f"           validate:"min=1,max=500"`
 }
 
 // jsonForm is used to Unmarshal into since it has Fields of json.RawMessage
 type jsonForm struct {
 	FormMetadata
-	Fields []json.RawMessage `json:"fields"                       bson:"f"`
+	Fields []json.RawMessage `json:"fields"                  bson:"f"`
 }
 
 // bsonForm is used to Unmarshal into since it has Fields of bson.Raw
 type bsonForm struct {
 	FormMetadata
-	Fields []bson.Raw `json:"fields"                       bson:"f"`
+	Fields []bson.Raw `json:"fields"                         bson:"f"`
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
