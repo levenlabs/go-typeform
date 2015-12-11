@@ -19,6 +19,9 @@ func validateURL(v interface{}, _ string) error {
 	if !ok {
 		return validator.ErrUnsupported
 	}
+	if u == "" {
+		return nil
+	}
 	uo, err := url.Parse(u)
 	if uo.Scheme == "" {
 		return errors.New("missing scheme in url")

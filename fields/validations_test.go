@@ -11,4 +11,5 @@ func TestURL(t *T) {
 	assert.Nil(t, validator.Valid("http://typeform.io/", tags))
 	assert.NotNil(t, validator.Valid("11111", tags))
 	assert.NotNil(t, validator.Valid(11111, tags))
+	assert.Nil(t, validator.Valid("", tags))
 }
