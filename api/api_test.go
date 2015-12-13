@@ -46,11 +46,11 @@ func TestCreate(t *T) {
 
 	j = []byte(`{
 		"id": "random",
-		"urls": {
+		"urls": [{
 			"id": "test",
 			"form_id": "test1",
 			"version": "v0.4"
-		}
+		}]
 	}`)
 	client = &testClient{
 		Body: ioutil.NopCloser(bytes.NewBuffer(j)),
@@ -61,7 +61,7 @@ func TestCreate(t *T) {
 	require.Nil(t, err)
 
 	assert.Equal(t, "random", res.ID)
-	assert.Equal(t, "test", res.URLs.ID)
-	assert.Equal(t, "test1", res.URLs.FormID)
-	assert.Equal(t, "v0.4", res.URLs.Version)
+	assert.Equal(t, "test", res.URLs[0].ID)
+	assert.Equal(t, "test1", res.URLs[0].FormID)
+	assert.Equal(t, "v0.4", res.URLs[0].Version)
 }

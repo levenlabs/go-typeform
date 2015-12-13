@@ -21,8 +21,8 @@ type URLs struct {
 }
 
 type CreateResult struct {
-	ID string `json:"id"`
-	URLs URLs `json:"urls"`
+	ID   string `json:"id"`
+	URLs []URLs `json:"urls"`
 }
 
 func Create(f *fields.Form) (*CreateResult, error) {
