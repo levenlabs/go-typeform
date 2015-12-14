@@ -2,7 +2,7 @@
 
 Libraries for interacting with [Typeform I/O](http://docs.typeform.io/docs).
 
-## fields
+## tyform
 
 This package contains all the fields needed to represent a form and different
 fields that you send/receive from the API. A form could be many different types
@@ -14,7 +14,7 @@ properties of each specific field.
 
 **Not all fields are implemented yet. This is a WIP**
 
-## api
+## tyapi
 
 This package contains methods for creating forms and implementing a webhook
 handler to process responses. The `Results` struct is sent to the webhook
