@@ -1,9 +1,9 @@
-package api
+package tyapi
 
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/levenlabs/go-typeform/fields"
+	"github.com/levenlabs/go-typeform/tyform"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"io"
@@ -40,7 +40,7 @@ func TestCreate(t *T) {
 		]
 	}`)
 
-	f := &fields.Form{}
+	f := &tyform.Form{}
 	err := json.Unmarshal(j, f)
 	require.Nil(t, err)
 

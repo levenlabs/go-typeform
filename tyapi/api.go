@@ -1,11 +1,11 @@
-package api
+package tyapi
 
 import (
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/levenlabs/go-typeform/fields"
+	"github.com/levenlabs/go-typeform/tyform"
 	"net/http"
 )
 
@@ -25,7 +25,7 @@ type CreateResult struct {
 	URLs []URLs `json:"urls"`
 }
 
-func Create(f *fields.Form) (*CreateResult, error) {
+func Create(f *tyform.Form) (*CreateResult, error) {
 	if APIToken == "" {
 		return nil, errRmptyToken
 	}

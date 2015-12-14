@@ -1,4 +1,4 @@
-package fields
+package tyform
 
 import (
 	"github.com/levenlabs/golib/testutil"

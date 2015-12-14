@@ -2,7 +2,7 @@
 // associated metadata.
 // Each of these matches a field in the [Fields](http://docs.typeform.io/docs/introduction)
 // section of their api documentation.
-package fields
+package tyform
 
 // Field is a generic Field that holds common properties of all Fields in a Form
 type Field struct {
