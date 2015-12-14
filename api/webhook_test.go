@@ -457,7 +457,7 @@ func TestWrapCallback(t *T) {
 		Body:   ioutil.NopCloser(bytes.NewBuffer(b)),
 		URL:    u,
 	}
-	wrapCallback(func(r *Results) error {
+	wrapCallback(func(r *Results, _ *http.Request) error {
 		assert.Equal(t, "test", r.ID)
 		assert.Equal(t, "t1", r.Token)
 		require.Len(t, r.Answers, 1)
@@ -476,7 +476,7 @@ func TestWrapCallback(t *T) {
 		Body:   ioutil.NopCloser(bytes.NewBuffer(b)),
 		URL:    u,
 	}
-	wrapCallback(func(r *Results) error {
+	wrapCallback(func(r *Results, _ *http.Request) error {
 		// this should never run
 		require.True(t, false)
 		return nil
@@ -488,7 +488,7 @@ func TestWrapCallback(t *T) {
 		Method: "GET",
 		URL:    u,
 	}
-	wrapCallback(func(r *Results) error {
+	wrapCallback(func(r *Results, _ *http.Request) error {
 		// this should never run
 		require.True(t, false)
 		return nil
@@ -502,7 +502,7 @@ func TestWrapCallback(t *T) {
 		Body:   ioutil.NopCloser(bytes.NewBuffer(b)),
 		URL:    u,
 	}
-	wrapCallback(func(r *Results) error {
+	wrapCallback(func(r *Results, _ *http.Request) error {
 		return errors.New("an error occurred")
 	})(r, req)
 	assert.Equal(t, http.StatusInternalServerError, r.Code)

@@ -82,11 +82,11 @@ type BooleanValue bool
 // Note: the handler might be called multiple times for the same results set.
 // You should store the Token for each call and verify you haven't already
 // processed it.
-func ListenAndServe(addr string, cb func(*Results) error) error {
+func ListenAndServe(addr string, cb func(*Results, *http.Request) error) error {
 	return http.ListenAndServe(addr, http.HandlerFunc(wrapCallback(cb)))
 }
 
-func wrapCallback(cb func(*Results) error) func(http.ResponseWriter, *http.Request) {
+func wrapCallback(cb func(*Results, *http.Request) error) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		kv := llog.KV{
 			"ip":  r.RemoteAddr,
@@ -107,7 +107,7 @@ func wrapCallback(cb func(*Results) error) func(http.ResponseWriter, *http.Reque
 			return
 		}
 
-		err := cb(res)
+		err := cb(res, r)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		} else {
