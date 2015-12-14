@@ -11,7 +11,7 @@ import (
 // Results represents a single set of answers received from typeform via the
 // webhook in response to someone taking a form
 type Results struct {
-	ID      string          `json:"id"              bson:"i"`
+	UID     string          `json:"uid"             bson:"i"`
 	Token   string          `json:"token"           bson:"t"`
 	Answers []ResultsAnswer `json:"answers"         bson:"a"`
 }

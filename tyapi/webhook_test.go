@@ -444,7 +444,7 @@ func TestBSONChoices(t *T) {
 
 func TestWrapCallback(t *T) {
 	b := []byte(`{
-		"id": "test",
+		"uid": "test",
 		"token": "t1",
 		"answers": [
 			{"field_id":123,"type":"boolean","value":true}
@@ -458,7 +458,7 @@ func TestWrapCallback(t *T) {
 		URL:    u,
 	}
 	wrapCallback(func(r *Results, _ *http.Request) error {
-		assert.Equal(t, "test", r.ID)
+		assert.Equal(t, "test", r.UID)
 		assert.Equal(t, "t1", r.Token)
 		require.Len(t, r.Answers, 1)
 		assert.EqualValues(t, 123, r.Answers[0].FieldID)
