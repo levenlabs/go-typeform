@@ -1,26 +1,26 @@
 package api
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-	. "testing"
+	"bytes"
 	"encoding/json"
 	"github.com/levenlabs/go-typeform/fields"
-	"net/http"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"io"
 	"io/ioutil"
-	"bytes"
+	"net/http"
+	. "testing"
 )
 
 type testClient struct {
-	Body io.ReadCloser
+	Body       io.ReadCloser
 	StatusCode int
 }
 
 func (t *testClient) Do(r *http.Request) (*http.Response, error) {
 	resp := &http.Response{
 		StatusCode: t.StatusCode,
-		Body: t.Body,
+		Body:       t.Body,
 	}
 	return resp, nil
 }
@@ -53,7 +53,7 @@ func TestCreate(t *T) {
 		}]
 	}`)
 	client = &testClient{
-		Body: ioutil.NopCloser(bytes.NewBuffer(j)),
+		Body:       ioutil.NopCloser(bytes.NewBuffer(j)),
 		StatusCode: http.StatusCreated,
 	}
 

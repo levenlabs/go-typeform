@@ -1,12 +1,12 @@
 package api
 
 import (
-	"github.com/levenlabs/go-typeform/fields"
-	"encoding/json"
-	"fmt"
-	"net/http"
-	"errors"
 	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"github.com/levenlabs/go-typeform/fields"
+	"net/http"
 )
 
 var version = "v0.4"
@@ -15,8 +15,8 @@ var errRmptyToken = errors.New("Empty APIToken")
 var client httpClient = http.DefaultClient
 
 type URLs struct {
-	ID string `json:"id"`
-	FormID string `json:"form_id"`
+	ID      string `json:"id"`
+	FormID  string `json:"form_id"`
 	Version string `json:"version"`
 }
 

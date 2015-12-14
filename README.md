@@ -13,3 +13,9 @@ all the field-specific data for each type. There are also validations using the
 properties of each specific field.
 
 **Not all fields are implemented yet. This is a WIP**
+
+## api
+
+This package contains methods for creating forms and implementing a webhook
+handler to process responses. The `Results` struct is sent to the webhook
+handler and represents a single set of results in response to a completed form.

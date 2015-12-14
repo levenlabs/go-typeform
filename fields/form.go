@@ -27,8 +27,8 @@ type jsonForm struct {
 
 // bsonForm is used to Unmarshal into since it has Fields of bson.Raw
 type bsonForm struct {
-	FormMetadata
-	Fields []bson.Raw `json:"fields"                         bson:"f"`
+	FormMetadata `bson:",inline"`
+	Fields       []bson.Raw `json:"fields"                   bson:"f"`
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface
