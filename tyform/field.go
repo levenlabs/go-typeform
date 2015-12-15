@@ -49,7 +49,8 @@ type MultipleChoice struct {
 type Statement struct {
 	Field      `bson:",inline"`
 	ButtonText string `json:"button_text,omitempty"     bson:"b,omitempty"    validate:"max=128"`
-	HasMarks   bool   `json:"has_marks,omitempty"       bson:"h,omitempty"`
+	// cannot omit empty for has_marks because it doesn't default to false
+	HasMarks   bool   `json:"has_marks"                 bson:"h,omitempty"`
 }
 
 // YesNo is just text, with yes/no selector
