@@ -18,7 +18,7 @@ func TestJSONStatement(t *T) {
 			},
 		},
 	}
-	fs := `{"title":"","fields":[{"type":"statement","question":"","has_marks":false}]}`
+	fs := `{"title":"","fields":[{"type":"statement","question":""}]}`
 	j, err := json.Marshal(f)
 	require.Nil(t, err)
 	assert.Equal(t, fs, string(j))
