@@ -10,6 +10,7 @@ type FormMetadata struct {
 	Title      string   `json:"title"                        bson:"t"           validate:"min=1,max=256"`
 	Tags       []string `json:"tags,omitempty"               bson:"g,omitempty" validate:"arrMap=min=1,arrMap=max=128,max=100"`
 	WebhookURL string   `json:"webhook_submit_url,omitempty" bson:"w,omitempty" validate:"validateURL"`
+	DesignID   string   `json:"design_id,omitempty"          bson:"d,omitempty" validate:"max=128"`
 }
 
 // A Form is a group of Fields that can be submitted to TypeForm's [/forms](http://docs.typeform.io/docs/forms)
