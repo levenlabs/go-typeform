@@ -49,6 +49,7 @@ type MultipleChoice struct {
 type Statement struct {
 	Field      `bson:",inline"`
 	ButtonText string `json:"button_text,omitempty"     bson:"b,omitempty"    validate:"max=128"`
+	HideMarks  bool   `json:"hide_marks,omitempty"      bson:"h,omitempty"`
 }
 
 // YesNo is just text, with yes/no selector
