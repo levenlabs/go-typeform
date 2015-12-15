@@ -42,18 +42,18 @@ func TestMultipleChoiceChoice(t *T) {
 func TestMultipleChoice(t *T) {
 	// there is at least 1 choice required
 	assert.NotNil(t, validator.Validate(&MultipleChoice{
-		Field:   randField(TypeStatement),
+		Field:   randField(TypeMultipleChoice),
 		Choices: []MultipleChoiceChoice{},
 	}))
 
 	// you cannot have more than 25 choices
 	assert.NotNil(t, validator.Validate(&MultipleChoice{
-		Field:   randField(TypeStatement),
+		Field:   randField(TypeMultipleChoice),
 		Choices: randChoices(26),
 	}))
 
 	assert.Nil(t, validator.Validate(&MultipleChoice{
-		Field:   randField(TypeStatement),
+		Field:   randField(TypeMultipleChoice),
 		Choices: randChoices(1),
 	}))
 }
@@ -88,7 +88,7 @@ func TestOpinionScale(t *T) {
 	}))
 
 	assert.Nil(t, validator.Validate(&OpinionScale{
-		Field: randField(TypeStatement),
+		Field: randField(TypeOpinionScale),
 		Steps: 5,
 	}))
 }

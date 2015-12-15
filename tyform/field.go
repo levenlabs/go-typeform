@@ -50,6 +50,11 @@ type Statement struct {
 	Field `bson:",inline"`
 }
 
+// YesNo is just text, with yes/no selector
+type YesNo struct {
+	Field `bson:",inline"`
+}
+
 // FieldType describes the type of field
 type FieldType string
 
@@ -57,6 +62,7 @@ var (
 	TypeStatement      FieldType = "statement"
 	TypeOpinionScale   FieldType = "opinion_scale"
 	TypeMultipleChoice FieldType = "multiple_choice"
+	TypeYesNo          FieldType = "YesNo"
 )
 
 // emptyInterface can be used to get an empty specific struct for the type of
@@ -69,6 +75,8 @@ func (f *Field) emptyInterface() (dst FieldInterface) {
 		dst = &OpinionScale{}
 	case TypeMultipleChoice:
 		dst = &MultipleChoice{}
+	case TypeYesNo:
+		dst = &YesNo{}
 	default:
 		dst = f
 	}
