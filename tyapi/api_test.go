@@ -30,7 +30,7 @@ func init() {
 }
 
 func TestCreate(t *T) {
-	j := []byte(`{
+	sj := []byte(`{
 		"title": "Form",
 		"fields": [
 			{
@@ -41,10 +41,10 @@ func TestCreate(t *T) {
 	}`)
 
 	f := &tyform.Form{}
-	err := json.Unmarshal(j, f)
+	err := json.Unmarshal(sj, f)
 	require.Nil(t, err)
 
-	j = []byte(`{
+	j := []byte(`{
 		"id": "random",
 		"urls": [{
 			"id": "test",
@@ -64,4 +64,24 @@ func TestCreate(t *T) {
 	assert.Equal(t, "test", res.URLs[0].ID)
 	assert.Equal(t, "test1", res.URLs[0].FormID)
 	assert.Equal(t, "v0.4", res.URLs[0].Version)
+
+	j = []byte(`{
+		"error": "test",
+		"field": "test_field",
+		"description": "this is an error"
+	}`)
+	client = &testClient{
+		Body:       ioutil.NopCloser(bytes.NewBuffer(j)),
+		StatusCode: http.StatusBadRequest,
+	}
+
+	_, err = Create(f)
+	require.NotNil(t, err)
+
+	errRes, ok := err.(Error)
+	require.True(t, ok)
+
+	assert.Equal(t, "test", errRes.ErrorType)
+	assert.Equal(t, "test_field", errRes.Field)
+	assert.Equal(t, "this is an error", errRes.Description)
 }
