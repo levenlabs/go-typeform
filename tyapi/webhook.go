@@ -5,6 +5,7 @@ import (
 	"github.com/levenlabs/go-llog"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
+	"sort"
 	"strconv"
 )
 
@@ -110,7 +111,7 @@ func wrapCallback(cb func(*Results, *http.Request) error) func(http.ResponseWrit
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-
+		sort.Sort(res.Answers)
 		err := cb(res, r)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

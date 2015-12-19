@@ -448,7 +448,8 @@ func TestWrapCallback(t *T) {
 		"uid": "test",
 		"token": "t1",
 		"answers": [
-			{"field_id":123,"type":"boolean","value":true}
+			{"field_id":123,"type":"boolean","value":true},
+			{"field_id":122,"type":"boolean","value":true}
 		]
 	}`)
 	u, _ := url.Parse("http://test")
@@ -461,9 +462,10 @@ func TestWrapCallback(t *T) {
 	wrapCallback(func(r *Results, _ *http.Request) error {
 		assert.Equal(t, "test", r.UID)
 		assert.Equal(t, "t1", r.Token)
-		require.Len(t, r.Answers, 1)
-		assert.EqualValues(t, 123, r.Answers[0].FieldID)
+		require.Len(t, r.Answers, 2)
+		assert.EqualValues(t, 122, r.Answers[0].FieldID)
 		assert.Equal(t, "boolean", r.Answers[0].Type)
+		assert.EqualValues(t, 123, r.Answers[1].FieldID)
 		v := BooleanValue(true)
 		assert.Equal(t, &v, r.Answers[0].Value)
 		return nil
