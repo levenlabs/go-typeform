@@ -64,7 +64,7 @@ var (
 	TypeStatement      FieldType = "statement"
 	TypeOpinionScale   FieldType = "opinion_scale"
 	TypeMultipleChoice FieldType = "multiple_choice"
-	TypeYesNo          FieldType = "YesNo"
+	TypeYesNo          FieldType = "yes_no"
 )
 
 // emptyInterface can be used to get an empty specific struct for the type of
