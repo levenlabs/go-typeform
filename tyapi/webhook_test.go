@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"sort"
 	. "testing"
 )
 
@@ -507,4 +508,28 @@ func TestWrapCallback(t *T) {
 	})(r, req)
 	assert.Equal(t, http.StatusInternalServerError, r.Code)
 	assert.Equal(t, 0, r.Body.Len())
+}
+
+func TestAnswersSort(t *T) {
+	s := ResultsAnswerSlice{
+		ResultsAnswer{
+			ResultsAnswerMetadata: ResultsAnswerMetadata{
+				FieldID: 9,
+			},
+		},
+		ResultsAnswer{
+			ResultsAnswerMetadata: ResultsAnswerMetadata{
+				FieldID: 1,
+			},
+		},
+		ResultsAnswer{
+			ResultsAnswerMetadata: ResultsAnswerMetadata{
+				FieldID: 3,
+			},
+		},
+	}
+	sort.Sort(s)
+	assert.EqualValues(t, 1, s[0].FieldID)
+	assert.EqualValues(t, 3, s[1].FieldID)
+	assert.EqualValues(t, 9, s[2].FieldID)
 }

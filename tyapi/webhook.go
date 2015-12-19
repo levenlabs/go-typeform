@@ -8,12 +8,16 @@ import (
 	"strconv"
 )
 
+// ResultsAnswerSlice implements the sort interface and sorts by FieldID
+// ascending
+type ResultsAnswerSlice []ResultsAnswer
+
 // Results represents a single set of answers received from typeform via the
 // webhook in response to someone taking a form
 type Results struct {
-	UID     string          `json:"uid"             bson:"i"`
-	Token   string          `json:"token"           bson:"t"`
-	Answers []ResultsAnswer `json:"answers"         bson:"a"`
+	UID     string             `json:"uid"          bson:"i"`
+	Token   string             `json:"token"        bson:"t"`
+	Answers ResultsAnswerSlice `json:"answers"      bson:"a"`
 }
 
 // ResultsAnswerMetadata is shared between the different forms of the answer
@@ -114,6 +118,21 @@ func wrapCallback(cb func(*Results, *http.Request) error) func(http.ResponseWrit
 			w.WriteHeader(http.StatusOK)
 		}
 	}
+}
+
+// Len implements the sort interface
+func (s ResultsAnswerSlice) Len() int {
+	return len(s)
+}
+
+// Less implements the sort interface
+func (s ResultsAnswerSlice) Less(i, j int) bool {
+	return s[i].FieldID < s[j].FieldID
+}
+
+// Swap implements the sort interface
+func (s ResultsAnswerSlice) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
 }
 
 func (a *ResultsAnswer) emptyValue() interface{} {
