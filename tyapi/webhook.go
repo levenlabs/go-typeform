@@ -1,6 +1,7 @@
 package tyapi
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/levenlabs/go-llog"
 	"gopkg.in/mgo.v2/bson"
@@ -28,6 +29,13 @@ type ResultsAnswerMetadata struct {
 	Tags    []string `json:"tags,omitempty"         bson:"g,omitempty"`
 }
 
+// jsonResultsAnswerMetadata is needed because json has to use json.Number
+type jsonResultsAnswerMetadata struct {
+	FieldID json.Number `json:"field_id" bson:"i"`
+	Type    string      `json:"type" bson:"t"`
+	Tags    []string    `json:"tags,omitempty"      bson:"g,omitempty"`
+}
+
 // ResultsAnswer is a single answer in the Results
 // The Value can be many different types. See http://docs.typeform.io/docs/results-introduction
 type ResultsAnswer struct {
@@ -37,7 +45,7 @@ type ResultsAnswer struct {
 
 // jsonForm is used to Unmarshal into since it has Value of json.RawMessage
 type jsonAnswer struct {
-	ResultsAnswerMetadata
+	jsonResultsAnswerMetadata
 	Value json.RawMessage `json:"value"             bson:"v"`
 }
 
@@ -50,6 +58,11 @@ type bsonAnswer struct {
 // NumberValue represents a number answer
 type NumberValue struct {
 	Amount int64 `json:"amount"                     bson:"a"`
+}
+
+// jsonNumberValue is needed because json has to use json.Number
+type jsonNumberValue struct {
+	Amount json.Number `json:"amount"`
 }
 
 // ChoiceValue represents a number answer
@@ -136,9 +149,12 @@ func (s ResultsAnswerSlice) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 
-func (a *ResultsAnswer) emptyValue() interface{} {
+func (a *ResultsAnswer) emptyValue(forJSON bool) interface{} {
 	switch a.Type {
 	case "number":
+		if forJSON {
+			return &jsonNumberValue{}
+		}
 		return &NumberValue{}
 	case "choice":
 		return &ChoiceValue{}
@@ -152,18 +168,50 @@ func (a *ResultsAnswer) emptyValue() interface{} {
 	return nil
 }
 
+func numberToInt64(n json.Number) (int64, error) {
+	// attempt to use Int64, but if that doesn't work, fallback to Float64
+	if i, err := n.Int64(); err == nil {
+		return i, nil
+	}
+	f, err := n.Float64()
+	if err != nil {
+		return 0, err
+	}
+	return int64(f), nil
+}
+
 // UnmarshalJSON implements the json.Unmarshaler interface
 func (a *ResultsAnswer) UnmarshalJSON(b []byte) error {
 	ja := &jsonAnswer{}
-	if err := json.Unmarshal(b, ja); err != nil {
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.UseNumber()
+	if err := d.Decode(ja); err != nil {
 		return err
 	}
-	a.ResultsAnswerMetadata = ja.ResultsAnswerMetadata
+	fid, err := numberToInt64(ja.jsonResultsAnswerMetadata.FieldID)
+	if err != nil {
+		return err
+	}
+	a.ResultsAnswerMetadata = ResultsAnswerMetadata{
+		FieldID: fid,
+		Type:    ja.jsonResultsAnswerMetadata.Type,
+		Tags:    ja.jsonResultsAnswerMetadata.Tags,
+	}
 
-	a.Value = a.emptyValue()
+	a.Value = a.emptyValue(true)
 	if a.Value != nil {
-		if err := json.Unmarshal(ja.Value, a.Value); err != nil {
+		d = json.NewDecoder(bytes.NewReader(ja.Value))
+		d.UseNumber()
+		if err := d.Decode(a.Value); err != nil {
 			return err
+		}
+		switch v := a.Value.(type) {
+		case *jsonNumberValue:
+			nv, err := numberToInt64(v.Amount)
+			if err != nil {
+				return err
+			}
+			a.Value = &NumberValue{nv}
 		}
 	}
 	return nil
@@ -177,7 +225,7 @@ func (a *ResultsAnswer) SetBSON(raw bson.Raw) error {
 	}
 	a.ResultsAnswerMetadata = ba.ResultsAnswerMetadata
 
-	a.Value = a.emptyValue()
+	a.Value = a.emptyValue(false)
 	if a.Value != nil {
 		if err := ba.Value.Unmarshal(a.Value); err != nil {
 			return err

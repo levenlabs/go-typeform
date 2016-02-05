@@ -28,10 +28,9 @@ type OpinionLabels struct {
 // OpinionScale is a scale from 0-(steps - 1)
 type OpinionScale struct {
 	Field      `bson:",inline"`
-	Steps      int64 `json:"steps"                      bson:"s"              validate:"min=5,max=11"`
-	StartAtOne bool  `json:"start_at_one,omitempty"     bson:"sao,omitempty"`
-	// todo: figure out how to validate if completely empty (once https://github.com/go-validator/validator/pull/38)
-	Labels OpinionLabels `json:"labels,omitempty"       bson:"l,omitempty"`
+	Steps      int64         `json:"steps"                  bson:"s"              validate:"min=5,max=11"`
+	StartAtOne bool          `json:"start_at_one,omitempty" bson:"sao,omitempty"`
+	Labels     OpinionLabels `json:"labels,omitempty"       bson:"l,omitempty"`
 }
 
 // MultipleChoiceChoice is a choice in a MultipleChoice's Choices slice

@@ -33,6 +33,23 @@ func TestJSONNumber(t *T) {
 	assert.EqualValues(t, a, na)
 }
 
+func TestJSONNumberExp(t *T) {
+	a := &ResultsAnswer{
+		ResultsAnswerMetadata: ResultsAnswerMetadata{
+			FieldID: 1774766,
+		},
+		Value: &NumberValue{
+			Amount: 1111111,
+		},
+	}
+	a.Type = "number"
+	fs := []byte(`{"field_id":1.774766e+06,"type":"number","value":{"amount":1.111111e+06}}`)
+	na := &ResultsAnswer{}
+	err := json.Unmarshal(fs, na)
+	require.Nil(t, err)
+	assert.EqualValues(t, a, na)
+}
+
 func TestBSONNumber(t *T) {
 	n := &NumberValue{
 		Amount: 5,
