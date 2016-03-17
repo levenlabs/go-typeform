@@ -3,11 +3,13 @@ package tyapi
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/levenlabs/go-llog"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 // ResultsAnswerSlice implements the sort interface and sorts by FieldID
@@ -232,6 +234,38 @@ func (a *ResultsAnswer) SetBSON(raw bson.Raw) error {
 		}
 	}
 	return nil
+}
+
+// String returns a string version of the answer
+func (a *ResultsAnswer) String() string {
+	if a.Value == nil {
+		return ""
+	}
+	switch v := a.Value.(type) {
+	case *NumberValue:
+		return strconv.FormatInt(v.Amount, 10)
+	case *BooleanValue:
+		if bool(*v) {
+			return "true"
+		} else {
+			return "false"
+		}
+	case *ChoiceValue:
+		if !v.EmptyOther {
+			return v.Other
+		}
+		return v.Label
+	case *ChoicesValue:
+		if !v.EmptyOther {
+			return v.Other
+		}
+		return strings.Join(v.Labels, ",")
+	case *TextValue:
+		return string(*v)
+	default:
+		llog.Error(fmt.Sprintf("encountered unknown type in stringValue: %T", a))
+	}
+	return ""
 }
 
 func otherUnmarshal(m json.RawMessage, dst *string) (bool, error) {

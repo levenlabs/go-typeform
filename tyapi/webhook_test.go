@@ -552,3 +552,59 @@ func TestAnswersSort(t *T) {
 	assert.EqualValues(t, 3, s[1].FieldID)
 	assert.EqualValues(t, 9, s[2].FieldID)
 }
+
+func TestAnswerString(t *T) {
+	a := &ResultsAnswer{
+		Value: &NumberValue{
+			Amount: 5,
+		},
+	}
+	assert.Equal(t, "5", a.String())
+
+	b := BooleanValue(true)
+	a = &ResultsAnswer{
+		Value: &b,
+	}
+	assert.Equal(t, "true", a.String())
+	b = BooleanValue(false)
+	a = &ResultsAnswer{
+		Value: &b,
+	}
+	assert.Equal(t, "false", a.String())
+
+	tv := TextValue("hey")
+	a = &ResultsAnswer{
+		Value: &tv,
+	}
+	assert.Equal(t, "hey", a.String())
+
+	a = &ResultsAnswer{
+		Value: &ChoiceValue{
+			Label:      "val",
+			EmptyOther: true,
+		},
+	}
+	assert.Equal(t, "val", a.String())
+	a = &ResultsAnswer{
+		Value: &ChoiceValue{
+			Other:      "other",
+			EmptyOther: false,
+		},
+	}
+	assert.Equal(t, "other", a.String())
+
+	a = &ResultsAnswer{
+		Value: &ChoicesValue{
+			Labels:     []string{"val", "val2"},
+			EmptyOther: true,
+		},
+	}
+	assert.Equal(t, "val,val2", a.String())
+	a = &ResultsAnswer{
+		Value: &ChoicesValue{
+			Other:      "other",
+			EmptyOther: false,
+		},
+	}
+	assert.Equal(t, "other", a.String())
+}
